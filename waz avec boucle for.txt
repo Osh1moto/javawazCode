@@ -1,0 +1,125 @@
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+public class WhatsAppAnalyzer {
+    public static void main(String[] args) {
+        // Demande le nom de l'utilisateur à analyser
+        System.out.print("Entrez le nom de l'utilisateur à analyser : ");
+        String user = System.console().readLine();
+
+        // Initialise les compteurs à 0
+        int totalMessages = 0;
+        int lolCount = 0;
+        int lmaoCount = 0;
+        int emojiCount = 0;
+        int curseCount = 0;
+        int receivedEmojiCount = 0;
+        int angryEmojiCount = 0;
+        int amenCount = 0;
+        int akpeCount = 0;
+        int merciCount = 0;
+        int nagodeCount = 0;
+        int imelaCount = 0;
+        int thanksCount = 0;
+        int thankYouCount = 0;
+        int alhamdulillahCount = 0;
+        int shukranCount = 0;
+
+        String message = "";
+        String sender = "";
+        boolean isSender = false;
+        try {
+            // Lit le contenu du fichier dans une chaîne
+            byte[] encoded = Files.readAllBytes(Paths.get("whatsapp.txt"));
+            String content = new String(encoded, StandardCharsets.UTF_8);
+
+            // Parcours chaque caractère dans le fichier
+            for (int i = 0; i < content.length(); i++) {
+                char c = content.charAt(i);
+                if(c==':'){
+                    isSender=true;
+                }else if(c=='\n'){
+                    if(sender.equals(user)){
+                        totalMessages++; // Incrémente le compteur de messages
+                        if (message.contains("lol")) {
+                            lolCount++;
+                        }
+                        if (message.contains("lmao")) {
+                            lmaoCount++;
+                        }
+                        if (message.matches(".*[\\uD83C-\\uDBFF\\uDC00-\\uDFFF].*")) {
+                            emojiCount++;
+                        }
+                        if (message.contains("fuck") || message.contains("merde") || message.contains("putain") || message.contains("ass")) {
+                            curseCount++;
+                        }
+                        if (message.contains("amen")) {
+                            amenCount++;
+                        }
+                        if (message.contains("akpe")) {
+                            akpeCount++;
+                        }
+                        if (message.contains("merci")) {
+                            merciCount++;
+                        }
+                        if (message.contains("nagode")) {
+                            nagodeCount++;
+                        }
+		        if (message.contains("imela")) {
+                            imelaCount++;
+                        }
+                        if (message.contains("thanks")) {
+                            thanksCount++;
+                        }
+                        if (message.contains("thank you")) {
+                            thankYouCount++;
+                        }
+                        if (message.contains("alhamdulillah")) {
+                            alhamdulillahCount++;
+                        }
+                        if (message.contains("shukran")) {
+                            shukranCount++;
+                        }
+                    }else{
+                        if (message.matches(".*[\\uD83C-\\uDBFF\\uDC00-\\uDFFF].*")) {
+                            receivedEmojiCount++;
+                        }
+                        if (message.contains("😡")) {
+                            angryEmojiCount++;
+                        }
+                    }
+                    message="";
+                    sender="";
+                    isSender=false;
+                }else if(isSender){
+                    sender+=c;
+                }else{
+                    message+=c;
+                }
+            }
+
+            // Affiche les résultats
+            System.out.println("Nombre total de messages envoyés : " + totalMessages);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé \"lol\" : " + lolCount);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé \"lmao\" : " + lmaoCount);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé des emojis : " + emojiCount);
+            System.out.println("Nombre total de grossièretés envoyées par l'utilisateur : " + curseCount);
+            System.out.println("Nombre total de fois où l'utilisateur a reçu des emojis : " + receivedEmojiCount);
+            System.out.println("Nombre total de fois où l'utilisateur a reçu l'emoji 😡 en colère : " + angryEmojiCount);
+	    System.out.println("Nombre total de fois où l'utilisateur a envoyé et reçu les mots \"amen\" : " + amenCount);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé et reçu les mots \"akpe\" : " + akpeCount);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé et reçu les mots \"merci\" : " + merciCount);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé et reçu les mots \"nagode\" : " + nagodeCount);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé et reçu les mots \"imela\" : " + imelaCount);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé et reçu les mots \"thanks\" : " + thanksCount);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé et reçu les mots \"thank you\" : " + thankYouCount);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé et reçu les mots \"alhamdulillah\" : " + alhamdulillahCount);
+            System.out.println("Nombre total de fois où l'utilisateur a envoyé et reçu les mots \"shukran\" : " + shukranCount);
+        } catch (IOException e) {
+            System.out.println("Erreur lors de la lecture du fichier : " + e.getMessage());
+        }
+    }
+}
